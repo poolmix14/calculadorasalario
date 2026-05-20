@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Calculadora 12x36 · Porteiro RJ</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d1b3e;--card:rgba(255,255,255,0.06);--border:rgba(255,255,255,0.10);
+  --hdr:rgba(255,255,255,0.08);--inp:rgba(255,255,255,0.07);--inpb:rgba(255,255,255,0.14);
+  --blue:#4a9eff;--bluel:#7bb8ff;--green:#2ecc71;--yellow:#f1c40f;--red:#e74c3c;
+  --white:#fff;--muted:rgba(255,255,255,0.45);--text:rgba(255,255,255,0.90);
+  --R:18px;--RS:12px;
+}
+html,body{min-height:100vh;background:linear-gradient(170deg,#0d1b3e 0%,#0f2347 45%,#091630 100%);
+  color:var(--text);font-family:'Inter',sans-serif;font-size:15px;line-height:1.5}
+.app{max-width:480px;margin:0 auto;padding:0 0 56px}
+
+/* HEADER */
+.hdr{padding:32px 24px 24px;text-align:center}
+.badge{display:inline-flex;align-items:center;gap:7px;background:rgba(74,158,255,.15);
+  border:1px solid rgba(74,158,255,.35);color:var(--bluel);font-size:12px;font-weight:600;
+  letter-spacing:.8px;padding:6px 16px;border-radius:100px;margin-bottom:16px}
+.hdr h1{font-size:28px;font-weight:800;color:var(--white);line-height:1.15;letter-spacing:-.5px}
+.hdr h1 .hl{color:var(--blue);display:block;font-size:34px;letter-spacing:-1px}
+.hdr p{color:var(--muted);font-size:13.5px;margin-top:8px;line-height:1.6;max-width:290px;margin-left:auto;margin-right:auto}
+
+/* CARDS */
+.card{margin:0 16px 14px;background:var(--card);border:1px solid var(--border);border-radius:var(--R);overflow:hidden}
+.card-hdr{display:flex;align-items:center;gap:12px;padding:15px 18px;border-bottom:1px solid var(--border);background:var(--hdr)}
+.ico{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.ic-b{background:rgba(74,158,255,.20)}.ic-g{background:rgba(46,204,113,.18)}.ic-y{background:rgba(241,196,15,.18)}.ic-r{background:rgba(231,76,60,.18)}
+.card-ttl{font-size:15px;font-weight:700;color:var(--white)}
+.card-body{padding:16px 18px}
+
+/* FIELDS */
+.field{margin-bottom:14px}.field:last-child{margin-bottom:0}
+.field label{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;
+  color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:7px}
+.inp-w{position:relative}
+.pfx{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:15px;font-weight:600;pointer-events:none}
+input[type=number]{width:100%;background:var(--inp);border:1.5px solid var(--inpb);border-radius:var(--RS);
+  color:var(--white);font-family:'Inter',sans-serif;font-size:18px;font-weight:500;
+  padding:13px 14px 13px 40px;outline:none;transition:border-color .2s,box-shadow .2s,background .2s;
+  -webkit-appearance:none;appearance:none}
+input[type=number]:focus{border-color:var(--blue);background:rgba(74,158,255,.08);box-shadow:0 0 0 3px rgba(74,158,255,.15)}
+input[type=number]::placeholder{color:rgba(255,255,255,.2)}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
+input[type=number]{-moz-appearance:textfield}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.hint{font-size:12px;font-weight:500;margin-top:7px;opacity:.85}
+
+/* VT TOGGLE */
+.vt-sec{margin:0 16px 14px}
+.vt-lbl{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;display:block}
+.vt-tog{display:grid;grid-template-columns:1fr 1fr;border-radius:var(--RS);overflow:hidden;border:1.5px solid var(--inpb)}
+.vt-btn{padding:14px 10px;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;
+  border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;
+  background:var(--inp);color:var(--muted);transition:background .2s,color .2s}
+.vt-yes{background:rgba(46,204,113,.18);color:var(--green)}
+.vt-no{background:rgba(231,76,60,.14);color:var(--red)}
+.vt-info{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.5;font-style:italic}
+
+/* BUTTONS */
+.btn-calc{display:flex;align-items:center;justify-content:center;gap:10px;
+  width:calc(100% - 32px);margin:4px 16px 0;background:var(--blue);color:#fff;
+  font-family:'Inter',sans-serif;font-size:16px;font-weight:700;padding:17px;border:none;
+  border-radius:var(--R);cursor:pointer;box-shadow:0 6px 28px rgba(74,158,255,.35);
+  transition:transform .15s}
+.btn-calc:active{transform:scale(.97)}
+.btn-rel{display:none;align-items:center;justify-content:center;gap:10px;
+  width:calc(100% - 32px);margin:14px 16px 0;
+  background:transparent;border:2px solid var(--yellow);color:var(--yellow);
+  font-family:'Inter',sans-serif;font-size:15px;font-weight:700;padding:15px;
+  border-radius:var(--R);cursor:pointer;box-shadow:0 4px 20px rgba(241,196,15,.2);
+  transition:transform .15s}
+.btn-rel:active{transform:scale(.97)}
+.btn-reset{display:flex;align-items:center;justify-content:center;gap:8px;
+  width:calc(100% - 32px);margin:14px 16px 0;background:transparent;
+  border:1.5px solid var(--border);color:var(--muted);font-family:'Inter',sans-serif;
+  font-size:14px;font-weight:600;padding:14px;border-radius:var(--R);cursor:pointer}
+
+/* RESULT AREA */
+#resultado{display:none;animation:up .4s cubic-bezier(.22,.68,0,1.2)}
+@keyframes up{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.divider{display:flex;align-items:center;gap:10px;margin:20px 16px 12px}
+.divider span{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.li{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06);gap:12px}
+.li:last-of-type{border-bottom:none}
+.ll{font-size:14px;color:var(--muted);flex:1}
+.lv{font-size:15px;font-weight:600;color:var(--white);white-space:nowrap}
+.fbox{background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 14px;margin-bottom:12px;font-size:13px;color:var(--muted);line-height:1.9}
+.fbox strong{color:var(--white)}
+.tline{display:flex;justify-content:space-between;align-items:center;padding:11px 0 0;margin-top:6px;border-top:1.5px solid rgba(255,255,255,.10)}
+.tlbl{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+.tval{font-size:20px;font-weight:800}
+.c-b{color:var(--bluel)!important}.c-g{color:var(--green)!important}.c-y{color:var(--yellow)!important}.c-r{color:var(--red)!important}.c-w{color:var(--white)!important}
+
+/* HORA CARD */
+.hora-card{margin:0 16px 14px;background:rgba(74,158,255,.10);border:1px solid rgba(74,158,255,.25);border-radius:var(--R);padding:15px 18px;display:flex;justify-content:space-between;align-items:center}
+.hora-lbl{font-size:12px;font-weight:600;color:var(--bluel);text-transform:uppercase;letter-spacing:.7px}
+.hora-form{font-size:12px;color:var(--muted);margin-top:2px}
+.hora-val{font-size:26px;font-weight:800;color:var(--bluel)}
+
+/* BRUTO */
+.bruto-card{margin:0 16px 14px;background:linear-gradient(135deg,rgba(46,204,113,.13) 0%,rgba(74,158,255,.09) 100%);border:1.5px solid rgba(46,204,113,.28);border-radius:var(--R);padding:20px;text-align:center}
+.bruto-lbl{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);margin-bottom:5px}
+.bruto-val{font-size:36px;font-weight:800;color:var(--green);letter-spacing:-1px}
+.bruto-sub{font-size:13px;color:var(--muted);margin-top:7px}
+.bruto-sub span{color:var(--white);font-weight:600}
+
+/* DESCONTOS */
+.desc-card{margin:0 16px 14px;background:rgba(231,76,60,.07);border:1.5px solid rgba(231,76,60,.20);border-radius:var(--R);overflow:hidden}
+.desc-hdr{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid rgba(231,76,60,.15);background:rgba(231,76,60,.08)}
+.desc-ttl{font-size:14px;font-weight:700;color:#ff7b6b}
+.desc-body{padding:14px 18px}
+.dl{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.05);gap:12px}
+.dl:last-of-type{border-bottom:none}
+.dn{font-size:14px;color:var(--muted);flex:1}.dn small{font-size:11px;display:block;opacity:.65;margin-top:1px}
+.dv{font-size:15px;font-weight:600;white-space:nowrap}
+.dtline{display:flex;justify-content:space-between;align-items:center;padding:11px 0 0;margin-top:6px;border-top:1.5px solid rgba(231,76,60,.20)}
+.dtlbl{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#ff7b6b}
+.dtval{font-size:20px;font-weight:800;color:var(--red)}
+
+/* INSS TABLE */
+.faixas{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px}
+.faixas th{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);padding:5px 6px;text-align:left;border-bottom:1px solid rgba(255,255,255,.07)}
+.faixas td{padding:7px 6px;border-bottom:1px solid rgba(255,255,255,.04);font-size:12.5px;color:var(--muted)}
+.faixas tr.at td{color:var(--white);background:rgba(74,158,255,.08);font-weight:600}
+.faixas td:last-child{text-align:right}
+
+/* IRRF */
+.irrf-card .fbox{margin-bottom:0}
+
+/* LÍQUIDO */
+.liq-card{margin:0 16px 14px;background:linear-gradient(135deg,rgba(241,196,15,.12) 0%,rgba(74,158,255,.07) 100%);border:1.5px solid rgba(241,196,15,.30);border-radius:var(--R);padding:20px;text-align:center}
+.liq-lbl{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--yellow);margin-bottom:5px}
+.liq-val{font-size:38px;font-weight:800;color:var(--yellow);letter-spacing:-1.5px;line-height:1.1}
+.liq-sub{font-size:12px;color:var(--muted);margin-top:7px;line-height:1.5}
+
+/* ALERT */
+.alert{margin:0 16px 14px;background:rgba(74,158,255,.07);border:1px solid rgba(74,158,255,.18);border-radius:12px;padding:12px 16px;font-size:12.5px;color:rgba(255,255,255,.55);line-height:1.65}
+.alert strong{color:var(--bluel)}
+
+/* FULLSCREEN RELATÓRIO */
+#rel-screen{display:none;position:fixed;inset:0;z-index:9999;background:#000;flex-direction:column;align-items:center}
+#rel-screen.active{display:flex}
+#canvas-wrap{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;width:100%;display:flex;justify-content:center;align-items:flex-start}
+#rel-canvas{display:block;max-width:100%}
+#rel-bar{width:100%;background:#111;border-top:1px solid #333;display:flex;flex-shrink:0}
+#rel-bar button{flex:1;padding:16px 8px;border:none;cursor:pointer;font-size:14px;font-weight:700;font-family:'Inter',sans-serif}
+.bar-save{background:var(--green);color:#000}
+.bar-close{background:#222;color:#aaa;border-left:1px solid #333}
+
+/* SAVE OVERLAY */
+#save-overlay{display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.95);flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px}
+#save-overlay.show{display:flex}
+#save-img{max-width:100%;max-height:65vh;border-radius:8px;border:2px solid var(--green)}
+.save-tip{color:#fff;font-size:14px;text-align:center;line-height:1.7}
+.save-tip strong{color:var(--green)}
+.save-tip-sub{color:var(--muted);font-size:12px;text-align:center}
+#save-close{background:#333;color:#fff;border:none;padding:12px 36px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer}
+
+/* roundRect polyfill */
+
+/* ── FORM COMPACTO ── */
+.hdr { padding: 20px 20px 12px; }
+.hdr h1 { font-size: 24px; font-weight: 800; color: var(--white); letter-spacing: -.3px; }
+.hdr h1 .hl { color: var(--blue); }
+.hdr p { font-size: 12px; margin-top: 4px; }
+.badge { margin-bottom: 10px; font-size: 11px; padding: 5px 14px; }
+
+.form-compact {
+  margin: 0 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--R);
+  overflow: hidden;
+}
+
+.fc-row {
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.fc-2col {
+  display: flex;
+  align-items: stretch;
+  padding: 12px 16px;
+  gap: 0;
+}
+
+.fc-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fc-vsep {
+  width: 1px;
+  background: var(--border);
+  margin: 0 14px;
+}
+
+.fc-vt-row {
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.fc-divider { height: 1px; background: var(--border); margin: 0; }
+
+.fc-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.fc-ico {
+  width: 24px; height: 24px; border-radius: 6px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 12px; flex-shrink: 0;
+}
+
+.fc-pct {
+  font-size: 10px;
+  color: var(--green);
+  font-weight: 700;
+}
+
+.fc-mini-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fc-x {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* input grande (salário) */
+.fc-inp { flex: 1; max-width: 200px; }
+.fc-inp input[type=number] {
+  font-size: 16px;
+  padding: 10px 10px 10px 36px;
+}
+
+/* input pequeno (qtd/horas) */
+.fc-inp-sm { flex: 1; }
+.fc-inp-sm input[type=number] {
+  font-size: 15px;
+  padding: 9px 6px 9px 30px;
+}
+
+/* VT mini toggle */
+.vt-tog-mini {
+  display: flex;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1.5px solid var(--inpb);
+}
+.vtm-btn {
+  padding: 7px 14px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px; font-weight: 700;
+  border: none; cursor: pointer;
+  background: var(--inp); color: var(--muted);
+  transition: background .2s, color .2s;
+}
+.vtm-yes { background: rgba(46,204,113,.18); color: var(--green); }
+.vtm-no  { background: rgba(231,76,60,.14);  color: var(--red); }
+
+.btn-calc { margin: 12px 16px 0; width: calc(100% - 32px); padding: 15px; }
+
+
+/* ── CALENDÁRIO ── */
+.cal-wrap { padding: 8px 12px 10px; }
+
+/* NAV */
+.cal-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 6px;
+}
+.cal-arrow {
+  background: rgba(255,255,255,0.08); border: none; color: #fff;
+  font-size: 20px; font-weight: 300; width: 30px; height: 30px;
+  border-radius: 50%; cursor: pointer; display: flex; align-items: center;
+  justify-content: center; transition: background .2s;
+}
+.cal-arrow:active { background: rgba(255,255,255,0.2); }
+.cal-mes-nome { font-size: 22px; font-weight: 800; color: #ff4d2e; letter-spacing: -0.5px; }
+
+/* ESCALA BTN ROW */
+.cal-escala-row {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+}
+.btn-escala {
+  display: flex; align-items: center; gap: 5px;
+  background: #c0392b; color: #fff; border: none; border-radius: 20px;
+  font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700;
+  padding: 6px 12px; cursor: pointer; white-space: nowrap;
+  transition: background .2s, transform .1s;
+}
+.btn-escala.ativo { background: #f39c12; animation: pulse .8s infinite alternate; }
+.btn-escala:active { transform: scale(.95); }
+@keyframes pulse { from{opacity:1} to{opacity:.55} }
+.escala-hint { font-size: 10px; color: var(--yellow); font-weight: 600; flex:1; line-height:1.4; }
+
+/* LEGENDA */
+.cal-legenda {
+  display: flex; gap: 12px; margin-bottom: 6px; font-size: 10px; color: var(--muted); align-items:center;
+}
+.leg-dot { display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:3px; vertical-align:middle; }
+.ld-p   { background:#c0392b; }
+.ld-f   { background:#1a5c2a; }
+.ld-fer { background:#4a9eff; }
+
+/* HEADER DIAS */
+.cal-grid-hdr {
+  display: grid; grid-template-columns: repeat(7,1fr);
+  text-align: center; margin-bottom: 3px;
+}
+.cal-grid-hdr span { font-size: 10px; color: rgba(255,255,255,0.35); font-weight: 600; padding: 1px 0; }
+
+/* GRID */
+.cal-grid {
+  display: grid; grid-template-columns: repeat(7,1fr);
+  gap: 3px;
+}
+
+/* CÉLULA — estilo iPhone com cantos arredondados grandes */
+.cal-cell {
+  aspect-ratio: 1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  border-radius: 10px;
+  font-size: 13px; font-weight: 700;
+  cursor: pointer; position: relative;
+  border: none;
+  transition: transform .12s;
+  user-select: none; -webkit-user-select: none;
+  color: rgba(255,255,255,0.2);
+  background: transparent;
+  gap: 0;
+}
+.cal-cell:active { transform: scale(0.84); }
+.cal-cell.vazio  { pointer-events: none; }
+
+/* PLANTÃO — fundo vermelho escuro, número vermelho */
+.cal-cell.plantao {
+  background: #3d0a0a;
+  border: 1px solid #7a1a1a;
+  color: #ff5555;
+}
+/* FOLGA — fundo verde escuro, número verde */
+.cal-cell.folga {
+  background: #0a2e0f;
+  border: 1px solid #1a6b2a;
+  color: #3ddc6e;
+}
+/* DIA NORMAL */
+.cal-cell.dia-normal {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.35);
+}
+/* HOJE — verde brilhante sólido */
+.cal-cell.hoje {
+  background: #2ecc71 !important;
+  border: none !important;
+  color: #fff !important;
+}
+.cal-cell.hoje .fer-tag { color: rgba(255,255,255,0.7) !important; }
+
+/* INÍCIO DA ESCALA */
+.cal-cell.inicio-sel {
+  outline: 2px solid #f39c12;
+  outline-offset: 1px;
+}
+
+/* PONTO FERIADO */
+.cal-cell .fer-dot {
+  width: 4px; height: 4px; border-radius: 50%;
+  background: #4a9eff;
+  position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%);
+}
+/* TAG FERIADO (BR/RJ) */
+.cal-cell .fer-tag {
+  font-size: 7px; font-weight: 700; color: #4a9eff;
+  position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%);
+  white-space: nowrap; letter-spacing: 0.3px;
+  line-height: 1;
+}
+
+/* RESUMO */
+.cal-resumo {
+  margin-top: 8px; padding: 7px 10px;
+  background: rgba(0,0,0,0.25); border-radius: 8px;
+  display: flex; justify-content: space-around;
+}
+.cal-resumo-item { display:flex; flex-direction:column; align-items:center; gap:1px; }
+.cal-resumo-num  { font-size:15px; font-weight:800; }
+.cal-resumo-lbl  { color:var(--muted); font-size:9px; }
+
+
+/* Célula com número e dot separados */
+.cal-cell { padding-bottom: 0; flex-direction: column; gap: 0; }
+.cal-num { line-height: 1; margin-top: 2px; }
+.fer-dot-abs {
+  display: block;
+  width: 5px; height: 5px; border-radius: 50%;
+  background: #4a9eff;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+/* remover tag texto antiga */
+.fer-tag { display: none; }
+
+/* ── LISTA DE FERIADOS ── */
+#cal-feriados { margin-top: 10px; }
+.fer-lista-ttl {
+  font-size: 10px; font-weight: 700; letter-spacing: 1.2px;
+  color: var(--muted); padding: 4px 2px 6px; text-transform: uppercase;
+}
+.fer-lista-item {
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px; padding: 10px 12px;
+  margin-bottom: 6px;
+}
+.fer-lista-num {
+  font-size: 18px; font-weight: 800; color: #4a9eff;
+  min-width: 28px; text-align: center;
+}
+.fer-lista-info { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.fer-lista-nome { font-size: 13px; font-weight: 700; color: #fff; }
+.fer-lista-dow  { font-size: 11px; color: var(--muted); }
+.fer-lista-right { display: flex; align-items: center; gap: 6px; }
+.fer-flag { font-size: 16px; }
+.fer-badge {
+  font-size: 10px; font-weight: 700; padding: 3px 8px;
+  border-radius: 20px; white-space: nowrap;
+}
+.fer-badge-br { background: rgba(74,158,255,0.2); color: #7bb8ff; }
+.fer-badge-rj { background: rgba(255,255,255,0.12); color: #ccc; }
+
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="badge">🛡 Escala 12×36 · CLT · Rio de Janeiro</div>
+  <h1>Calculadora Salarial</h1>
+  <p>Horas extras e feriados calculados com INSS 9% e isenção IRRF 2026</p>
+</div>
+
+<!-- FORM COMPACTO -->
+<div class="form-compact">
+
+  <!-- SALÁRIO -->
+  <div class="fc-row">
+    <div class="fc-label"><span class="fc-ico ic-b">💲</span> Salário Base (R$)</div>
+    <div class="inp-w fc-inp"><span class="pfx">R$</span>
+      <input type="number" id="salario" placeholder="ex: 1960" inputmode="decimal" step="0.01" oninput="calcular()">
+    </div>
+  </div>
+
+  <div class="fc-divider"></div>
+
+  <!-- CALENDÁRIO -->
+  <div class="cal-wrap">
+    <div class="cal-nav">
+      <button class="cal-arrow" onclick="navMes(-1)">&#8249;</button>
+      <span class="cal-mes-nome" id="cal-nome">Mai 2026</span>
+      <button class="cal-arrow" onclick="navMes(1)">&#8250;</button>
+    </div>
+    <div class="cal-escala-row">
+      <button class="btn-escala" id="btn-escala" onclick="ativarEscolhaInicio()">
+        🔄 Início da Escala
+      </button>
+      <span class="escala-hint" id="escala-hint"></span>
+    </div>
+    <div class="cal-legenda">
+      <span><span class="leg-dot ld-p"></span>Plantão</span>
+      <span><span class="leg-dot ld-f"></span>Folga</span>
+      <span><span class="leg-dot ld-fer"></span>Feriado</span>
+    </div>
+    <div class="cal-grid-hdr">
+      <span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span>
+    </div>
+    <div class="cal-grid" id="cal-grid"></div>
+    <div class="cal-resumo" id="cal-resumo"></div>
+    <div id="cal-feriados"></div>
+  </div>
+
+  <div class="fc-divider"></div>
+
+  <!-- SÁBADO + DOMINGO lado a lado -->
+  <div class="fc-2col">
+    <div class="fc-group">
+      <div class="fc-label"><span class="fc-ico ic-g">📅</span> Sábados <span class="fc-pct">(+50%)</span></div>
+      <div class="fc-mini-row">
+        <div class="inp-w fc-inp-sm"><span class="pfx">#</span><input type="number" id="qSab" placeholder="2" inputmode="numeric" min="0" oninput="calcular()"></div>
+        <div class="fc-x">×</div>
+        <div class="inp-w fc-inp-sm"><span class="pfx">h</span><input type="number" id="hSab" placeholder="1" inputmode="decimal" step="0.5" min="0" oninput="calcular()"></div>
+      </div>
+    </div>
+    <div class="fc-vsep"></div>
+    <div class="fc-group">
+      <div class="fc-label"><span class="fc-ico ic-g">🌅</span> Domingos <span class="fc-pct">(+50%)</span></div>
+      <div class="fc-mini-row">
+        <div class="inp-w fc-inp-sm"><span class="pfx">#</span><input type="number" id="qDom" placeholder="2" inputmode="numeric" min="0" oninput="calcular()"></div>
+        <div class="fc-x">×</div>
+        <div class="inp-w fc-inp-sm"><span class="pfx">h</span><input type="number" id="hDom" placeholder="1" inputmode="decimal" step="0.5" min="0" oninput="calcular()"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fc-divider"></div>
+
+  <!-- FERIADOS -->
+  <div class="fc-row">
+    <div class="fc-label"><span class="fc-ico ic-y">🏖</span> Feriados <span class="fc-pct">(×2 dobro)</span></div>
+    <div class="fc-mini-row">
+      <div class="inp-w fc-inp-sm"><span class="pfx">#</span><input type="number" id="qFer" placeholder="3" inputmode="numeric" min="0" oninput="calcular()"></div>
+      <div class="fc-x">×</div>
+      <div class="inp-w fc-inp-sm"><span class="pfx">h</span><input type="number" id="hFer" placeholder="12" inputmode="decimal" step="0.5" min="0" oninput="calcular()"></div>
+    </div>
+  </div>
+
+  <div class="fc-divider"></div>
+
+  <!-- VT -->
+  <div class="fc-vt-row">
+    <div class="fc-label"><span class="fc-ico">🚌</span> Vale Transporte</div>
+    <div class="vt-tog-mini">
+      <button class="vtm-btn vtm-yes" id="btn-vt-s" onclick="setVT(true)">✅ Sim</button>
+      <button class="vtm-btn" id="btn-vt-n" onclick="setVT(false)">❌ Não</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- BTN CALCULAR -->
+<button class="btn-calc" onclick="scrollRes()">🧮 &nbsp;Calcular Salário</button>
+
+<!-- RESULTADO -->
+<div id="resultado">
+  <div class="divider"><span>Passo 1 · Valor da Hora</span></div>
+  <div class="hora-card">
+    <div><div class="hora-lbl">Hora Normal</div><div class="hora-form" id="rh_form">—</div></div>
+    <div class="hora-val" id="rh_val">—</div>
+  </div>
+
+  <div class="divider"><span>Passo 2 · Sábados</span></div>
+  <div class="card">
+    <div class="card-hdr"><div class="ico ic-g">📅</div><span class="card-ttl">Extras — Sábado (50%)</span></div>
+    <div class="card-body">
+      <div class="fbox" id="f_sab">—</div>
+      <div class="li"><span class="ll">Sábados trabalhados</span><span class="lv c-w" id="rs_q">—</span></div>
+      <div class="li"><span class="ll">Horas por sábado</span><span class="lv c-w" id="rs_h">—</span></div>
+      <div class="li"><span class="ll">Adicional</span><span class="lv c-g">+ 50%</span></div>
+      <div class="tline"><span class="tlbl">Total sábados</span><span class="tval c-g" id="rs_t">—</span></div>
+    </div>
+  </div>
+
+  <div class="divider"><span>Passo 3 · Domingos</span></div>
+  <div class="card">
+    <div class="card-hdr"><div class="ico ic-g">🌅</div><span class="card-ttl">Extras — Domingo (50%)</span></div>
+    <div class="card-body">
+      <div class="fbox" id="f_dom">—</div>
+      <div class="li"><span class="ll">Domingos trabalhados</span><span class="lv c-w" id="rd_q">—</span></div>
+      <div class="li"><span class="ll">Horas por domingo</span><span class="lv c-w" id="rd_h">—</span></div>
+      <div class="li"><span class="ll">Adicional</span><span class="lv c-g">+ 50%</span></div>
+      <div class="tline"><span class="tlbl">Total domingos</span><span class="tval c-g" id="rd_t">—</span></div>
+    </div>
+  </div>
+
+  <div class="divider"><span>Passo 4 · Feriados</span></div>
+  <div class="card">
+    <div class="card-hdr"><div class="ico ic-y">🏖</div><span class="card-ttl">Feriados Trabalhados (×2)</span></div>
+    <div class="card-body">
+      <div class="fbox" id="f_fer">—</div>
+      <div class="li"><span class="ll">Feriados trabalhados</span><span class="lv c-w" id="rf_q">—</span></div>
+      <div class="li"><span class="ll">Horas por feriado</span><span class="lv c-w" id="rf_h">—</span></div>
+      <div class="li"><span class="ll">Valor por feriado</span><span class="lv c-y" id="rf_cada">—</span></div>
+      <div class="li"><span class="ll">Adicional</span><span class="lv c-y">+ 100% (dobro)</span></div>
+      <div class="tline"><span class="tlbl">Total feriados</span><span class="tval c-y" id="rf_t">—</span></div>
+    </div>
+  </div>
+
+  <div class="divider"><span>Passo 5 · Resumo dos Adicionais</span></div>
+  <div class="card">
+    <div class="card-hdr"><div class="ico ic-b">🧾</div><span class="card-ttl">Soma dos Adicionais</span></div>
+    <div class="card-body">
+      <div class="li"><span class="ll" id="lbl_s">Sábados</span><span class="lv c-g" id="soma_s">—</span></div>
+      <div class="li"><span class="ll" id="lbl_d">Domingos</span><span class="lv c-g" id="soma_d">—</span></div>
+      <div class="li"><span class="ll" id="lbl_f">Feriados</span><span class="lv c-y" id="soma_f">—</span></div>
+      <div class="tline"><span class="tlbl">Total extra no bruto</span><span class="tval c-b" id="soma_t">—</span></div>
+    </div>
+  </div>
+
+  <div class="divider"><span>Salário Bruto</span></div>
+  <div class="bruto-card">
+    <div class="bruto-lbl">💰 Salário Bruto do Mês</div>
+    <div class="bruto-val" id="bruto_v">—</div>
+    <div class="bruto-sub">Base <span id="bruto_b">—</span> &nbsp;+&nbsp; Adicionais <span id="bruto_a">—</span></div>
+  </div>
+
+  <div class="divider"><span>Passo 6 · Descontos CLT</span></div>
+  <div class="desc-card">
+    <div class="desc-hdr"><div class="ico ic-r">📉</div><span class="desc-ttl">Descontos Obrigatórios</span></div>
+    <div class="desc-body">
+      <div class="dl"><div class="dn">INSS (9% sobre salário bruto)<small id="inss_ali">9% × bruto</small></div><span class="dv c-r" id="d_inss">—</span></div>
+      <div class="dl"><div class="dn">IRRF 2026<small id="irrf_fx">Tabela 2026</small></div><span class="dv" id="d_irrf">—</span></div>
+      <div class="dl" id="row_vt"><div class="dn">Vale Transporte<small>6% do salário base</small></div><span class="dv c-r" id="d_vt">—</span></div>
+      <div class="dtline"><span class="dtlbl">Total de descontos</span><span class="dtval" id="d_tot">—</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr"><div class="ico ic-b">📊</div><span class="card-ttl">Desconto INSS — 9% (CLT)</span></div>
+    <div class="card-body" style="padding:14px 16px">
+      <table class="faixas"><thead><tr><th>Base</th><th>Alíquota</th><th style="text-align:right">Desconto</th></tr></thead>
+      <tbody id="inss_tb"></tbody></table>
+    </div>
+  </div>
+
+  <div class="card irrf-card">
+    <div class="card-hdr"><div class="ico ic-y">📋</div><span class="card-ttl">Tabela IRRF 2026</span></div>
+    <div class="card-body">
+      <div class="fbox" id="f_irrf">—</div>
+      <div class="li"><span class="ll">Base de cálculo (bruto − INSS)</span><span class="lv c-w" id="r_birrf">—</span></div>
+      <div class="li"><span class="ll">Alíquota aplicada</span><span class="lv c-y" id="r_aliq">—</span></div>
+      <div class="li"><span class="ll">Parcela a deduzir</span><span class="lv c-w" id="r_ded">—</span></div>
+      <div class="tline"><span class="tlbl">IRRF a descontar</span><span class="tval c-r" id="r_irrf">—</span></div>
+    </div>
+  </div>
+
+  <div class="divider"><span>Salário Líquido</span></div>
+  <div class="liq-card">
+    <div class="liq-lbl">💳 Salário Líquido a Receber</div>
+    <div class="liq-val" id="liq_v">—</div>
+    <div class="liq-sub" id="liq_sub">—</div>
+  </div>
+
+  <div class="alert"><strong>ℹ️ Atenção:</strong> Verifique com o DP o percentual correto de domingo e feriado — algumas empresas praticam 100% para domingo e 150% para feriado conforme CCT. Outros descontos (plano de saúde, refeição) podem reduzir o líquido.</div>
+
+  <!-- BTN RELATÓRIO -->
+  <button class="btn-rel" id="btn_rel" onclick="gerarRelatorio()">📄 &nbsp;Ver Relatório · Salvar Imagem</button>
+  <button class="btn-reset" onclick="resetar()">🔄 &nbsp;Limpar e Calcular Novamente</button>
+</div><!-- /resultado -->
+
+</div><!-- /app -->
+
+<!-- TELA RELATÓRIO -->
+<div id="rel-screen">
+  <div id="canvas-wrap"><canvas id="rel-canvas"></canvas></div>
+  <div id="rel-bar">
+    <button class="bar-save" onclick="salvarImg()">💾 Salvar Imagem</button>
+    <button class="bar-close" onclick="fecharRel()">✕ Fechar</button>
+  </div>
+</div>
+
+<!-- OVERLAY SALVAR -->
+<div id="save-overlay">
+  <img id="save-img" src="" alt="relatório">
+  <div class="save-tip"><strong>Pressione e segure a imagem</strong><br>e escolha <strong>"Salvar na Galeria"</strong> ou <strong>"Adicionar às Fotos"</strong></div>
+  <div class="save-tip-sub">No Android o download já inicia automaticamente</div>
+  <button id="save-close" onclick="document.getElementById('save-overlay').classList.remove('show')">✓ Entendi</button>
+</div>
+
+<script>
+// ── roundRect polyfill ──
+if(!CanvasRenderingContext2D.prototype.roundRect){
+  CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){
+    r=Math.min(r,w/2,h/2);
+    this.beginPath();this.moveTo(x+r,y);this.lineTo(x+w-r,y);
+    this.quadraticCurveTo(x+w,y,x+w,y+r);this.lineTo(x+w,y+h-r);
+    this.quadraticCurveTo(x+w,y+h,x+w-r,y+h);this.lineTo(x+r,y+h);
+    this.quadraticCurveTo(x,y+h,x,y+h-r);this.lineTo(x,y+r);
+    this.quadraticCurveTo(x,y,x+r,y);this.closePath();return this;
+  };
+}
+
+// ── helpers ──
+const fmt = v=>'R$ '+v.toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+const fmtN = v=>v.toFixed(2).replace('.',',');
+
+// ── VT ──
+let usaVT=true;
+function setVT(v){
+  usaVT=v;
+  document.getElementById('btn-vt-s').className='vtm-btn'+(v?' vtm-yes':'');
+  document.getElementById('btn-vt-n').className='vtm-btn'+(!v?' vtm-no':'');
+  const rv=document.getElementById('row_vt');if(rv)rv.style.display=v?'':'none';
+  calcular();
+}
+
+// ── IRRF 2026 ──
+const IRRF=[
+  {ate:5000.00,ali:0,ded:0,lbl:'Isento (até R$ 5.000,00)'},
+  {ate:5625.51,ali:.075,ded:375.00,lbl:'7,5%'},
+  {ate:6750.00,ali:.150,ded:796.91,lbl:'15%'},
+  {ate:8562.50,ali:.225,ded:1303.16,lbl:'22,5%'},
+  {ate:Infinity,ali:.275,ded:1731.25,lbl:'27,5%'},
+];
+function calcIRRF(base){
+  for(const f of IRRF){if(base<=f.ate){const v=Math.max(0,base*f.ali-f.ded);return{v,ali:f.ali,ded:f.ded,lbl:f.lbl};}}
+  return{v:0,ali:0,ded:0,lbl:'Isento'};
+}
+
+// ── dados globais para o canvas ──
+let _d={};
+
+// ── CALCULAR ──
+function calcular(){
+  const sal=parseFloat(document.getElementById('salario').value)||0;
+  const qS=parseFloat(document.getElementById('qSab').value)||0;
+  const hS=parseFloat(document.getElementById('hSab').value)||0;
+  const qD=parseFloat(document.getElementById('qDom').value)||0;
+  const hD=parseFloat(document.getElementById('hDom').value)||0;
+  const qF=parseFloat(document.getElementById('qFer').value)||0;
+  const hF=parseFloat(document.getElementById('hFer').value)||0;
+  const res=document.getElementById('resultado');
+  if(!sal){res.style.display='none';return;}
+  res.style.display='block';
+
+  const hora=sal/220;
+  const tSab=hora*1.5*hS*qS;
+  const tDom=hora*1.5*hD*qD;
+  const ferCada=hora*hF*2;
+  const tFer=ferCada*qF;
+  const adic=tSab+tDom+tFer;
+  const bruto=sal+adic;
+  const inss=bruto*0.09;
+  const irrf=calcIRRF(bruto-inss);
+  const vt=usaVT?sal*0.06:0;
+  const totDesc=inss+irrf.v+vt;
+  const liq=bruto-totDesc;
+
+  // hora
+  document.getElementById('rh_form').textContent=fmt(sal)+' ÷ 220h';
+  document.getElementById('rh_val').textContent=fmt(hora);
+
+  // sábado
+  document.getElementById('rs_q').textContent=qS+(qS===1?' sábado':' sábados');
+  document.getElementById('rs_h').textContent=hS+'h';
+  document.getElementById('rs_t').textContent=fmt(tSab);
+  document.getElementById('f_sab').innerHTML='<strong>'+fmtN(hora)+'</strong> × 1,5 × '+hS+'h × '+qS+' = <span style="color:var(--green);font-weight:700">'+fmt(tSab)+'</span>';
+
+  // domingo
+  document.getElementById('rd_q').textContent=qD+(qD===1?' domingo':' domingos');
+  document.getElementById('rd_h').textContent=hD+'h';
+  document.getElementById('rd_t').textContent=fmt(tDom);
+  document.getElementById('f_dom').innerHTML='<strong>'+fmtN(hora)+'</strong> × 1,5 × '+hD+'h × '+qD+' = <span style="color:var(--green);font-weight:700">'+fmt(tDom)+'</span>';
+
+  // feriado
+  document.getElementById('rf_q').textContent=qF+(qF===1?' feriado':' feriados');
+  document.getElementById('rf_h').textContent=hF+'h';
+  document.getElementById('rf_cada').textContent=fmt(ferCada);
+  document.getElementById('rf_t').textContent=fmt(tFer);
+  document.getElementById('f_fer').innerHTML='<strong>'+fmtN(hora)+'</strong> × '+hF+'h × 2 = '+fmt(ferCada)+' por feriado<br>'+fmt(ferCada)+' × '+qF+' = <span style="color:var(--yellow);font-weight:700">'+fmt(tFer)+'</span>';
+
+  // resumo
+  document.getElementById('lbl_s').textContent='Sábados ('+qS+'×'+hS+'h a 50%)';
+  document.getElementById('lbl_d').textContent='Domingos ('+qD+'×'+hD+'h a 50%)';
+  document.getElementById('lbl_f').textContent='Feriados ('+qF+'×'+hF+'h em dobro)';
+  document.getElementById('soma_s').textContent=fmt(tSab);
+  document.getElementById('soma_d').textContent=fmt(tDom);
+  document.getElementById('soma_f').textContent=fmt(tFer);
+  document.getElementById('soma_t').textContent=fmt(adic);
+
+  // bruto
+  document.getElementById('bruto_v').textContent=fmt(bruto);
+  document.getElementById('bruto_b').textContent=fmt(sal);
+  document.getElementById('bruto_a').textContent=fmt(adic);
+
+  // descontos
+  document.getElementById('d_inss').textContent='− '+fmt(inss);
+  document.getElementById('inss_ali').textContent='9% × '+fmt(bruto);
+  document.getElementById('d_irrf').textContent=irrf.v>0?'− '+fmt(irrf.v):'Isento';
+  document.getElementById('d_irrf').className='dv '+(irrf.v>0?'c-r':'c-g');
+  document.getElementById('irrf_fx').textContent='Faixa: '+irrf.lbl;
+  document.getElementById('d_vt').textContent=usaVT?'− '+fmt(vt):'—';
+  document.getElementById('d_tot').textContent='− '+fmt(totDesc);
+  document.getElementById('row_vt').style.display=usaVT?'':'none';
+
+  // inss table
+  document.getElementById('inss_tb').innerHTML='<tr class="at"><td>Alíquota fixa 9%</td><td>9,0%</td><td>'+fmt(inss)+'</td></tr>';
+
+  // irrf detail
+  const bIRRF=bruto-inss;
+  document.getElementById('r_birrf').textContent=fmt(bIRRF);
+  document.getElementById('r_aliq').textContent=(irrf.ali*100).toFixed(1)+'%';
+  document.getElementById('r_ded').textContent=fmt(irrf.ded);
+  document.getElementById('r_irrf').textContent=irrf.v>0?fmt(irrf.v):'R$ 0,00 (Isento)';
+  document.getElementById('f_irrf').innerHTML=fmt(bruto)+' − INSS '+fmt(inss)+' = <strong>'+fmt(bIRRF)+'</strong><br>'+fmt(bIRRF)+' × '+(irrf.ali*100).toFixed(1)+'% − '+fmt(irrf.ded)+' = <span style="color:var(--red);font-weight:700">'+fmt(irrf.v)+'</span>';
+
+  // líquido
+  document.getElementById('liq_v').textContent=fmt(liq);
+  const ds=['INSS '+fmt(inss)];
+  if(irrf.v>0)ds.push('IRRF '+fmt(irrf.v));
+  if(usaVT)ds.push('VT '+fmt(vt));
+  document.getElementById('liq_sub').textContent=fmt(bruto)+' − ('+ds.join(' + ')+')';
+
+  // salvar dados
+  _d={sal,qS,hS,qD,hD,qF,hF,hora,tSab,tDom,ferCada,tFer,adic,bruto,inss,irrf:irrf.v,vt,totDesc,liq,usaVT,fmt,fmtN};
+
+  document.getElementById('btn_rel').style.display='flex';
+}
+
+function scrollRes(){
+  if(!parseFloat(document.getElementById('salario').value)){alert('Informe o salário base.');return;}
+  calcular();
+  setTimeout(()=>document.getElementById('resultado').scrollIntoView({behavior:'smooth',block:'start'}),60);
+}
+
+function resetar(){
+  ['salario','qSab','hSab','qDom','hDom','qFer','hFer'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('resultado').style.display='none';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── CANVAS RELATÓRIO ──
+function desenhar(){
+  const d=_d;
+  const canvas=document.getElementById('rel-canvas');
+  const wrap=document.getElementById('canvas-wrap');
+  const DPR=Math.min(window.devicePixelRatio||1,2);
+  const SW=Math.min(wrap.clientWidth||360,420);
+  const FONT='Arial';
+
+  // tamanhos proporcionais
+  const P=SW*0.045;
+  const IW=SW-P*2;
+  const FS=SW*0.033;   // normal
+  const FSS=SW*0.029;  // pequeno
+  const FSB=SW*0.036;  // bold título
+  const FSL=SW*0.062;  // líquido grande
+  const LH=SW*0.052;   // line height
+
+  // ── two-pass: medir altura e depois desenhar ──
+  function pass(cx){
+    let y=P*0.8;
+    const fnt=(sz,bold)=>{if(cx)cx.font=(bold?'bold ':'')+sz+'px '+FONT;};
+    const tw=(txt,sz,bold)=>{fnt(sz||FS,bold||false);return cx?cx.measureText(txt).width:txt.length*( sz||FS)*0.58;};
+    const text=(t,x,yy,col,sz,bold)=>{fnt(sz||FS,bold);if(cx){cx.fillStyle=col||'#ccc';cx.fillText(t,x,yy);}};
+    const textR=(t,yy,col,sz,bold)=>{fnt(sz||FS,bold);if(cx){cx.fillStyle=col||'#fff';cx.textAlign='right';cx.fillText(t,SW-P,yy);cx.textAlign='left';}};
+    const hline=(yy,col)=>{if(cx){cx.beginPath();cx.moveTo(P,yy);cx.lineTo(SW-P,yy);cx.strokeStyle=col||'#2a2a2a';cx.lineWidth=0.6;cx.stroke();}};
+    const box=(x,yy,w,h,col,fill,r)=>{if(cx){cx.beginPath();cx.roundRect(x,yy,w,h,r||4);if(fill){cx.fillStyle=fill;cx.fill();}if(col){cx.strokeStyle=col;cx.lineWidth=1.5;cx.stroke();}}};
+    const valBox=(txt,x,yy,col)=>{
+      const bw=tw(txt,FSS,true)+P*0.9;const bh=LH*0.75;
+      box(x,yy-bh*0.78,bw,bh,col,null,3);
+      fnt(FSS,true);if(cx){cx.fillStyle=col;cx.fillText(txt,x+P*0.35,yy);}
+      return bw;
+    };
+    const badge=(num,title,yy)=>{
+      const bs=FSB*1.5;
+      box(P,yy-bs*0.78,bs,bs,null,'#2563eb',3);
+      fnt(FSS,true);if(cx){cx.fillStyle='#fff';cx.textAlign='center';cx.fillText(String(num),P+bs/2,yy-bs*0.78+bs*0.72);cx.textAlign='left';}
+      text(title,P+bs+P*0.4,yy,'#fff',FSB,true);
+      return yy+LH*0.35;
+    };
+    const secTitle=(emoji,title,yy)=>{
+      text(emoji+'  '+title,P,yy,'#fff',FSB,true);
+      return yy+LH*0.45;
+    };
+    const rowItem=(lbl,val,yy,valCol)=>{
+      text(lbl,P,yy,'#bbb',FSS,false);
+      textR(val,yy,valCol||'#fff',FSS,true);
+      return yy+LH*0.92;
+    };
+
+    // ── CABEÇALHO ──
+    text('Com salário de R$ '+d.fmt(d.sal)+' em escala 12×36, vamos calcular tudo:',P,y,'#aaa',FSS,false);
+    y+=LH*0.82;hline(y);y+=LH*0.65;
+
+    // ── 1 HORA ──
+    y=badge(1,'Valor da hora',y);y+=LH*0.45;
+    const hForm=d.fmtN(d.hora)+'  ÷  220  =  '+d.fmtN(d.hora)+'  ≈  ';
+    // simplified
+    const hPre=d.fmt(d.sal)+' ÷ 220 = '+d.fmtN(d.hora)+' ≈ ';
+    text(hPre,P+FSB*1.6,y,'#ddd',FSS,false);
+    valBox(d.fmt(d.hora),P+FSB*1.6+tw(hPre,FSS,false),y,'#f1c40f');
+    y+=LH*0.95;hline(y);y+=LH*0.65;
+
+    // ── 2 SÁBADO ──
+    y=badge(2,'Horas extras de sábado',y);y+=LH*0.45;
+    text('• Você fez: '+d.qS+' sábado(s)  ·  '+d.hS+'h extra em cada',P+FSB*1.6,y,'#bbb',FSS,false);y+=LH*0.82;
+    text('Hora extra sábado geralmente é 50%:',P+FSB*1.6,y,'#2ecc71',FSS,false);y+=LH*0.82;
+    const sF=d.fmtN(d.hora)+' × 1,5 × '+d.hS+' × '+d.qS+' = ';
+    text(sF,P+FSB*1.6,y,'#ddd',FSS,false);
+    valBox(d.fmt(d.tSab),P+FSB*1.6+tw(sF,FSS,false),y,'#f1c40f');
+    y+=LH*0.95;hline(y);y+=LH*0.65;
+
+    // ── 3 DOMINGO ──
+    y=badge(3,'Horas extras de domingo',y);y+=LH*0.45;
+    text('• Você fez: '+d.qD+' domingo(s)  ·  '+d.hD+'h extra em cada',P+FSB*1.6,y,'#bbb',FSS,false);y+=LH*0.82;
+    text('Domingo normalmente também entra como 50%:',P+FSB*1.6,y,'#2ecc71',FSS,false);y+=LH*0.82;
+    const dF=d.fmtN(d.hora)+' × 1,5 × '+d.hD+' × '+d.qD+' = ';
+    text(dF,P+FSB*1.6,y,'#ddd',FSS,false);
+    valBox(d.fmt(d.tDom),P+FSB*1.6+tw(dF,FSS,false),y,'#f1c40f');
+    y+=LH*0.95;hline(y);y+=LH*0.65;
+
+    // ── 4 FERIADOS ──
+    y=badge(4,'Feriados trabalhados',y);y+=LH*0.45;
+    text('• Você fez: '+d.qF+' feriado(s)  ·  Jornada de '+d.hF+'h',P+FSB*1.6,y,'#bbb',FSS,false);y+=LH*0.82;
+    text('Cada feriado (dobro = ×2):',P+FSB*1.6,y,'#2ecc71',FSS,false);y+=LH*0.82;
+    const f1=d.fmtN(d.hora)+' × '+d.hF+' × 2 = ';
+    text(f1,P+FSB*1.6,y,'#ddd',FSS,false);
+    valBox(d.fmt(d.ferCada)+' por feriado',P+FSB*1.6+tw(f1,FSS,false),y,'#f1c40f');
+    y+=LH*0.82;
+    text('Agora os '+d.qF+':',P+FSB*1.6,y,'#2ecc71',FSS,false);y+=LH*0.82;
+    const f2=d.fmt(d.ferCada)+' × '+d.qF+' = ';
+    text(f2,P+FSB*1.6,y,'#ddd',FSS,false);
+    valBox(d.fmt(d.tFer),P+FSB*1.6+tw(f2,FSS,false),y,'#f1c40f');
+    y+=LH*0.95;hline(y);y+=LH*0.65;
+
+    // ── SOMA ──
+    y=secTitle('🧮','SOMA TOTAL DOS ADICIONAIS',y);y+=LH*0.35;
+    y=rowItem('• Sábados ('+d.qS+'×'+d.hS+'h a 50%)',d.fmt(d.tSab),y);
+    y=rowItem('• Domingos ('+d.qD+'×'+d.hD+'h a 50%)',d.fmt(d.tDom),y);
+    y=rowItem('• '+d.qF+' Feriado(s) ('+d.hF+'h em dobro)',d.fmt(d.tFer),y);
+    y+=LH*0.2;hline(y,'#333');y+=LH*0.7;
+    text('Total extra no bruto:',P,y,'#fff',FSB,true);
+    const aBox=d.fmt(d.adic);const aBW=tw(aBox,FSS,true)+P*0.9;
+    valBox(aBox,SW-P-aBW,y,'#f1c40f');
+    y+=LH*0.95;hline(y);y+=LH*0.65;
+
+    // ── BRUTO ──
+    y=secTitle('💰','SALÁRIO BRUTO APROXIMADO DO MÊS',y);y+=LH*0.35;
+    y=rowItem('Salário base',d.fmt(d.sal),y);
+    y=rowItem('Total dos adicionais','+ '+d.fmt(d.adic),y);
+    y+=LH*0.2;hline(y,'#333');y+=LH*0.7;
+    text('Total bruto aproximado:',P,y,'#fff',FSB,true);
+    const bBox=d.fmt(d.bruto);const bBW=tw(bBox,FSS,true)+P*0.9;
+    valBox(bBox,SW-P-bBW,y,'#2ecc71');
+    y+=LH*0.95;hline(y);y+=LH*0.65;
+
+    // ── DESCONTOS ──
+    y=secTitle('📉','DESCONTOS CLT',y);y+=LH*0.35;
+    y=rowItem('INSS (9% sobre salário bruto)','− '+d.fmt(d.inss),y,'#e74c3c');
+    y=rowItem('IRRF 2026',d.irrf>0?'− '+d.fmt(d.irrf):'Isento',y,d.irrf>0?'#e74c3c':'#2ecc71');
+    if(d.usaVT)y=rowItem('Vale Transporte (6% salário base)','− '+d.fmt(d.vt),y,'#e74c3c');
+    y+=LH*0.2;hline(y,'#333');y+=LH*0.7;
+    text('Total de descontos:',P,y,'#fff',FSB,true);
+    textR('− '+d.fmt(d.totDesc),y,'#e74c3c',FSB,true);
+    y+=LH*0.95;hline(y);y+=LH*0.65;
+
+    // ── LÍQUIDO ──
+    y=secTitle('💳','LÍQUIDO APROXIMADO',y);y+=LH*0.3;
+
+    // tamanhos fixos de fonte
+    const FS1=FSS;          // "O líquido ficaria perto de:"
+    const FS2=FSL;          // valor grande
+    const FS3=SW*0.028;     // nota azul
+
+    // espaçamentos explícitos entre linhas
+    const PAD=LH*0.45;      // padding interno topo e base
+    const G1=LH*0.55;       // gap entre linha1 e valor
+    const G2=LH*0.5;        // gap entre valor e nota
+
+    // altura total da caixa = pad + fs1 + g1 + fs2 + g2 + fs3 + pad
+    const boxH2 = PAD + FS1 + G1 + FS2 + G2 + FS3 + PAD;
+    box(P,y,IW,boxH2,'#2ecc71',null,6);
+
+    // linha 1 — "O líquido ficaria perto de:" (cinza, centralizado)
+    fnt(FS1,false);
+    const s1='O líquido ficaria perto de:';
+    const s1w=cx?cx.measureText(s1).width:s1.length*FS1*0.56;
+    let ly=y+PAD+FS1;  // baseline da linha 1
+    text(s1, P+(IW-s1w)/2, ly, '#888', FS1, false);
+
+    // linha 2 — valor grande (verde, centralizado)
+    fnt(FS2,true);
+    const s2=d.fmt(d.liq);
+    const s2w=cx?cx.measureText(s2).width:s2.length*FS2*0.62;
+    ly+=G1+FS2;  // avança gap1 + altura da fonte grande
+    text(s2, P+(IW-s2w)/2, ly, '#2ecc71', FS2, true);
+
+    // linha 3 — nota (azul, centralizado)
+    fnt(FS3,false);
+    const s3='(depende de INSS, VT e descontos da empresa)';
+    const s3w=cx?cx.measureText(s3).width:s3.length*FS3*0.56;
+    ly+=G2+FS3;  // avança gap2 + altura da fonte nota
+    text(s3, P+(IW-s3w)/2, ly, '#7bb8ff', FS3, false);
+
+    y+=boxH2+LH*0.25;
+
+    return y;
+  }
+
+  // first pass: measure
+  const totalH=Math.ceil(pass(null)+P);
+  canvas.width=SW*DPR;canvas.height=totalH*DPR;
+  canvas.style.width=SW+'px';canvas.style.height=totalH+'px';
+  const cx=canvas.getContext('2d');
+  cx.scale(DPR,DPR);
+  cx.fillStyle='#000';cx.fillRect(0,0,SW,totalH);
+  cx.textBaseline='alphabetic';
+  // second pass: draw
+  pass(cx);
+  return canvas;
+}
+
+function gerarRelatorio(){
+  if(!_d.sal)return;
+  const scr=document.getElementById('rel-screen');
+  scr.classList.add('active');
+  document.body.style.overflow='hidden';
+  requestAnimationFrame(()=>requestAnimationFrame(()=>desenhar()));
+}
+
+function fecharRel(){
+  document.getElementById('rel-screen').classList.remove('active');
+  document.body.style.overflow='';
+}
+
+function salvarImg(){
+  const canvas=document.getElementById('rel-canvas');
+  if(!canvas.width)desenhar();
+  const url=canvas.toDataURL('image/png');
+  // Android/Desktop: download direto
+  const a=document.createElement('a');
+  a.href=url;a.download='relatorio-12x36.png';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  // iOS: mostrar overlay para pressionar e segurar
+  document.getElementById('save-img').src=url;
+  document.getElementById('save-overlay').classList.add('show');
+}
+
+// init
+setVT(true);
+
+// ── CALENDÁRIO ──
+
+// Feriados fixos: key = "mes-dia" (0-indexed), val = {n: nome, t: 'BR'|'RJ', dow: dia semana abrev}
+// ── Feriados Nacionais (BR) + Estado/Município do Rio de Janeiro (RJ) ──
+const FERIADOS_FIXOS = {
+  // ── NACIONAIS BR ──
+  '0-1':  {n:'Confraternização Universal', t:'BR'},
+  '3-21': {n:'Tiradentes',                 t:'BR'},
+  '4-1':  {n:'Dia do Trabalho',            t:'BR'},
+  '8-7':  {n:'Independência do Brasil',    t:'BR'},
+  '9-12': {n:'Nossa Sra. Aparecida',       t:'BR'},
+  '10-2': {n:'Finados',                    t:'BR'},
+  '10-15':{n:'Proclamação da República',   t:'BR'},
+  '10-20':{n:'Consciência Negra',          t:'BR'},
+  '11-25':{n:'Natal',                      t:'BR'},
+  // ── ESTADUAIS / MUNICIPAIS RJ ──
+  '0-20': {n:'Dia de São Sebastião (RJ)',  t:'RJ'},
+  '3-23': {n:'Dia de São Jorge (RJ)',      t:'RJ'},
+  '10-28':{n:'Dia do Servidor Público (RJ)',t:'RJ'},
+  '11-20':{n:'Dia da Cidade do Rio (RJ)', t:'RJ'},
+};
+
+// Feriados móveis: Carnaval, Sexta Santa, Páscoa, Corpus Christi
+// (todos nacionais BR exceto onde indicado)
+
+// Feriados móveis por ano (calculados)
+function calcFeriadosMoveis(ano) {
+  // Algoritmo de Easter (Páscoa)
+  const a = ano % 19, b = Math.floor(ano/100), c = ano % 100;
+  const d = Math.floor(b/4), e = b % 4, f = Math.floor((b+8)/25);
+  const g = Math.floor((b-f+1)/3), h = (19*a+b-d-g+15) % 30;
+  const i = Math.floor(c/4), k = c % 4;
+  const l = (32+2*e+2*i-h-k) % 7;
+  const m2 = Math.floor((a+11*h+22*l)/451);
+  const mes = Math.floor((h+l-7*m2+114)/31) - 1; // 0-indexed
+  const dia = ((h+l-7*m2+114) % 31) + 1;
+
+  const pascoa = new Date(ano, mes, dia);
+  const add = (d) => { const dt=new Date(pascoa); dt.setDate(dt.getDate()+d); return dt; };
+
+  const fmt = (dt) => dt.getMonth()+'-'+dt.getDate();
+
+  const moveis = {};
+  // Carnaval: segunda e terça são ponto facultativo nacional, não feriado oficial
+  // mas no RJ são tratados como feriado municipal
+  moveis[fmt(add(-48))] = {n:'Segunda de Carnaval',   t:'RJ'};
+  moveis[fmt(add(-47))] = {n:'Terça de Carnaval',     t:'RJ'};
+  // Sexta-Feira Santa e Páscoa: feriados nacionais
+  moveis[fmt(add(-2))]  = {n:'Sexta-Feira Santa',     t:'BR'};
+  moveis[fmt(pascoa)]   = {n:'Páscoa',                t:'BR'};
+  // Corpus Christi: ponto facultativo federal, feriado no RJ
+  moveis[fmt(add(60))]  = {n:'Corpus Christi',        t:'RJ'};
+  return moveis;
+}
+
+let _feriadosMoveis = {};
+let _feriadosAno    = -1;
+
+function getFeriado(ano, mes, dia) {
+  if(ano !== _feriadosAno) {
+    _feriadosMoveis = calcFeriadosMoveis(ano);
+    _feriadosAno    = ano;
+  }
+  return FERIADOS_FIXOS[mes+'-'+dia] || _feriadosMoveis[mes+'-'+dia] || null;
+}
+
+const DIAS_SEMANA = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+const MESES_FULL  = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
+  'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+let calAno  = new Date().getFullYear();
+let calMes  = new Date().getMonth();
+let diasState    = {};
+let escalaInicio = null;
+let aguardandoInicio = false;
+
+function dKey(a,m,d){ return a+'-'+m+'-'+d; }
+
+function navMes(dir){
+  calMes += dir;
+  if(calMes>11){calMes=0;calAno++;}
+  if(calMes<0){calMes=11;calAno--;}
+  renderCal();
+}
+
+function preencherEscala(a,m,d){
+  diasState = {};
+  let cur = new Date(a,m,d);
+  for(let i=0;i<730;i++){
+    const ca=cur.getFullYear(),cm=cur.getMonth(),cd=cur.getDate();
+    diasState[dKey(ca,cm,cd)] = (i%2===0) ? 1 : 2;
+    cur.setDate(cur.getDate()+1);
+  }
+}
+
+function ativarEscolhaInicio(){
+  aguardandoInicio = true;
+  const btn=document.getElementById('btn-escala');
+  btn.classList.add('ativo');
+  btn.textContent='📅 Toque no 1º dia';
+  document.getElementById('escala-hint').textContent='Toque no dia que começa o plantão';
+  renderCal();
+}
+
+function escolherInicio(a,m,d){
+  escalaInicio={a,m,d};
+  aguardandoInicio=false;
+  preencherEscala(a,m,d);
+  const btn=document.getElementById('btn-escala');
+  btn.classList.remove('ativo');
+  btn.textContent='🔄 Início da Escala';
+  const MM=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  document.getElementById('escala-hint').textContent='Início: '+d+'/'+MM[m]+'/'+a;
+  renderCal();
+  sincronizarCampos();
+  calcular();
+}
+
+function toggleDia(a,m,d){
+  if(aguardandoInicio){ escolherInicio(a,m,d); return; }
+  const k=dKey(a,m,d);
+  diasState[k]=((diasState[k]||0)+1)%3;
+  renderCal();
+  sincronizarCampos();
+  calcular();
+}
+
+function sincronizarCampos(){
+  const a=calAno,m=calMes;
+  let qSab=0,qDom=0,qFer=0;
+  const total=new Date(a,m+1,0).getDate();
+  for(let d=1;d<=total;d++){
+    if((diasState[dKey(a,m,d)]||0)!==1) continue;
+    const dow=new Date(a,m,d).getDay();
+    if(getFeriado(a,m,d))    qFer++;
+    else if(dow===6)          qSab++;
+    else if(dow===0)          qDom++;
+  }
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v||'';};
+  set('qSab',qSab||''); set('hSab',qSab?1:'');
+  set('qDom',qDom||''); set('hDom',qDom?1:'');
+  set('qFer',qFer||''); set('hFer',qFer?12:'');
+}
+
+function renderCal(){
+  const a=calAno, m=calMes;
+  const hoje=new Date();
+  const eMesAtual=hoje.getFullYear()===a&&hoje.getMonth()===m;
+  const nomeEl=document.getElementById('cal-nome');
+  nomeEl.textContent=MESES_FULL[m]+' '+a;
+  nomeEl.style.color=eMesAtual?'#ff4d2e':'#fff';
+
+  const primeiroDia=new Date(a,m,1).getDay();
+  const totalDias=new Date(a,m+1,0).getDate();
+  const eHoje=d=>hoje.getFullYear()===a&&hoje.getMonth()===m&&hoje.getDate()===d;
+  const eInicio=d=>escalaInicio&&escalaInicio.a===a&&escalaInicio.m===m&&escalaInicio.d===d;
+
+  let cells='';
+  for(let i=0;i<primeiroDia;i++) cells+='<div class="cal-cell vazio"></div>';
+
+  const ferDoMes=[];
+
+  for(let d=1;d<=totalDias;d++){
+    const k=dKey(a,m,d);
+    const st=diasState[k]||0;
+    const fer=getFeriado(a,m,d);
+    if(fer){ const dt=new Date(a,m,d); ferDoMes.push({d,fer,dow:DIAS_SEMANA[dt.getDay()]}); }
+
+    let cls='cal-cell';
+    if(aguardandoInicio) cls+=' dia-normal';
+    else if(st===1)      cls+=' plantao';
+    else if(st===2)      cls+=' folga';
+    else                 cls+=' dia-normal';
+    if(eHoje(d))         cls+=' hoje';
+    if(eInicio(d))       cls+=' inicio-sel';
+
+    // bolinha azul ABAIXO do número (absoluta, não sobreposta)
+    const dotHTML = fer ? '<span class="fer-dot-abs"></span>' : '';
+
+    cells+=`<div class="${cls}" onclick="toggleDia(${a},${m},${d})">
+      <span class="cal-num">${d}</span>${dotHTML}
+    </div>`;
+  }
+  document.getElementById('cal-grid').innerHTML=cells;
+
+  // ── RESUMO ──
+  let nP=0,nF=0,nFer=0;
+  for(let d=1;d<=totalDias;d++){
+    const st=diasState[dKey(a,m,d)]||0;
+    if(st===1){nP++;if(getFeriado(a,m,d))nFer++;}
+    if(st===2) nF++;
+  }
+  document.getElementById('cal-resumo').innerHTML=`
+    <div class="cal-resumo-item"><span class="cal-resumo-num" style="color:#ff5555">${nP}</span><span class="cal-resumo-lbl">Plantões</span></div>
+    <div class="cal-resumo-item"><span class="cal-resumo-num" style="color:#3ddc6e">${nF}</span><span class="cal-resumo-lbl">Folgas</span></div>
+    <div class="cal-resumo-item"><span class="cal-resumo-num" style="color:#4a9eff">${nFer}</span><span class="cal-resumo-lbl">Feriados plant.</span></div>
+  `;
+
+  // ── LISTA DE FERIADOS DO MÊS ──
+  let ferHTML='';
+  if(ferDoMes.length>0){
+    ferHTML='<div class="fer-lista-ttl">FERIADOS</div>';
+    ferDoMes.forEach(({d,fer,dow})=>{
+      const flag = fer.t==='BR' ? '🇧🇷' : '🏳';
+      const badge = fer.t==='BR' ? 'Nacional' : 'Municipal RJ';
+      const badgeCls = fer.t==='BR' ? 'fer-badge-br' : 'fer-badge-rj';
+      ferHTML+=`
+      <div class="fer-lista-item">
+        <span class="fer-lista-num">${d}</span>
+        <div class="fer-lista-info">
+          <span class="fer-lista-nome">${fer.n}</span>
+          <span class="fer-lista-dow">${dow}</span>
+        </div>
+        <div class="fer-lista-right">
+          <span class="fer-flag">${flag}</span>
+          <span class="fer-badge ${badgeCls}">${badge}</span>
+        </div>
+      </div>`;
+    });
+  }
+  document.getElementById('cal-feriados').innerHTML=ferHTML;
+}
+
+// inicializar calendário
+renderCal();
+
+</script>
+</body>
+</html>
